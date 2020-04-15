@@ -1,0 +1,11 @@
+.page-search {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-bottom: 15px;
+}
+
+select.input {
+    height: 30px;
+    line-height: 30px;
+}

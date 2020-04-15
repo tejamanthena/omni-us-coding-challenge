@@ -1,0 +1,172 @@
+<div class="container">
+  <div (click)="saveEditedEmployee($event)" [style.width.%]="contentWidth">
+    <h3 style="text-align: center; text-decoration: underline;">Faculty</h3>
+    <app-pagination-search></app-pagination-search>
+    <table id="faculty" class="table dataTable table-bordered">
+      <thead>
+        <tr>
+          <th>Emp ID</th>
+          <th *ngIf="fieldsToInclude.includes('name')">
+            <div class="page-search">
+              <div>Name</div>
+              <div *ngIf="enableSorting && fieldsToIncludeInSorting.includes('name')"><img class="sort-icon"
+                  (click)="sortData('emp_name')" src="../assets/sort.svg"></div>
+            </div>
+          </th>
+          <th *ngIf="fieldsToInclude.includes('age')">
+            <div class="page-search">
+              <div>Age</div>
+              <div *ngIf="enableSorting && fieldsToIncludeInSorting.includes('age')"><img class="sort-icon"
+                  (click)="sortData('age')" src="../assets/sort.svg" ></div>
+              <div ><img class="sort-icon" (click)="filterData('age')"
+                src="../assets/filter.svg"></div>
+            </div>
+            <div class="age-filter" [ngClass]="{'visible': currentFilter == 'age'}">
+              <div><span> Filter Age </span></div>
+              <div> <span> From : <input type="number" [(ngModel)]="startAge" class="search-field input"></span> </div>
+              <div><span> To : <input type="number" [(ngModel)]="endAge" class="search-field input"> </span> </div>
+              <div>
+                <button (click)="applyFilter('age',startAge,endAge)">Apply</button>
+              </div>
+              <div *ngIf="errMsg != ''">
+                <span>{{errMsg}}</span>
+              </div>
+            </div>
+          </th>
+          <th *ngIf="fieldsToInclude.includes('subjects')">
+              <div class="page-search">
+                  <div>Subjects</div>
+    
+                  <div ><img class="sort-icon" (click)="filterData('subjects')"
+                    src="../assets/filter.svg"></div>
+                </div>
+                <div class="age-filter" [ngClass]="{'visible': currentFilter == 'subjects'}">
+                  <div><span> Filter Subjects </span></div>
+                  <div *ngFor="let sub of subjects">
+                    <label><input type="checkbox" (change)="filterSubjectRating($event,sub,'subjects')" value="" class="search-field input"
+                         > : {{sub}}</label>
+                  </div>
+                  <div>
+                    <button (click)="applyFilter('subjects',subArrStr,subArrStr)">Apply</button>
+                  </div>
+                </div>
+          </th>
+          <th *ngIf="fieldsToInclude.includes('salary')">
+            <div class="page-search">
+              <div>Salary</div>
+
+              <div *ngIf="enableSorting && fieldsToIncludeInSorting.includes('salary')"><img class="sort-icon"
+                  (click)="sortData('salary')" src="../assets/sort.svg"></div>
+              <div ><img class="sort-icon" (click)="filterData('salary')"
+                src="../assets/filter.svg"></div>
+            </div>
+            <div class="age-filter" [ngClass]="{'visible': currentFilter == 'salary'}">
+              <div><span> Filter Salary </span></div>
+              <div> <span> From : <input type="number" [(ngModel)]="startSalary" class="search-field input"></span> </div>
+              <div><span> To : <input type="number" [(ngModel)]="endSalary" class="search-field input"> </span> </div>
+              <div>
+                <button (click)="applyFilter('salary',startSalary,endSalary)">Apply</button>
+              </div>
+              <div *ngIf="errMsg != ''">
+                <span>{{errMsg}}</span>
+              </div>
+            </div>
+          </th>
+          <th *ngIf="fieldsToInclude.includes('rating')">
+            <div class="page-search">
+              <div>Rating</div>
+
+              <div *ngIf="enableSorting && fieldsToIncludeInSorting.includes('rating')"><img class="sort-icon"
+                  (click)="sortData('rating')" src="../assets/sort.svg"></div>
+              <div ><img class="sort-icon" (click)="filterData('rating')"
+                src="../assets/filter.svg"></div>
+            </div>
+            <div class="age-filter" [ngClass]="{'visible': currentFilter == 'rating'}">
+              <div><span> Filter Rating </span></div>
+              <div *ngFor="let rating of ratingList">
+                <label><input type="checkbox" value="" (change)="filterSubjectRating($event,rating,'rating')" class="search-field input"
+                     > : {{rating}}</label>
+              </div>
+              <div>
+                <button (click)="applyFilter('rating',ratingArrStr,ratingArrStr)">Apply</button>
+              </div>
+            </div>
+          </th>
+          <th *ngIf="fieldsToInclude.includes('joineddate')">
+            <div class="page-search">
+              <div>Joined Date</div>
+
+              <div *ngIf="enableSorting && fieldsToIncludeInSorting.includes('joineddate')"><img class="sort-icon"
+                  (click)="sortData('joined_date')" src="../assets/sort.svg"></div>
+              <div ><img class="sort-icon" (click)="filterData('joined_date')"
+                    src="../assets/filter.svg"></div>
+            </div>
+            <div class="age-filter" [ngClass]="{'visible': currentFilter == 'joined_date'}">
+              <div><span> Filter Joined Date </span></div>
+              <div> <span> From : <input type="date" [(ngModel)]="startDate" class="search-field input"></span> </div>
+              <div><span> To : <input type="date" [(ngModel)]="endDate" class="search-field input"> </span> </div>
+              <div>
+                <button (click)="applyFilter('joined_date',startDate,endDate)">Apply</button>
+              </div>
+            </div>
+          </th>
+          <th *ngIf="enableEditing">Operations</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let facult of paginatedData;let indexOfelement=index; "
+          [ngClass]="{ 'even': (indexOfelement) % 2 == 0, 'odd': (indexOfelement) % 2 != 0}" [class]="facult.emp_id">
+          <td>{{facult.emp_id}}</td>
+          <td *ngIf="fieldsToInclude.includes('name')" [class]="facult.emp_id"
+            [ngClass]="{'sorting' : sort.field =='emp_name' }">
+            <input [class]="facult.emp_id" type="text" class="search-field input"
+              *ngIf="currentEditableEmployee == facult.emp_id" [(ngModel)]="facult.emp_name">
+            <span *ngIf="currentEditableEmployee != facult.emp_id">{{facult.emp_name}}</span></td>
+          <td *ngIf="fieldsToInclude.includes('age')" [class]="facult.emp_id"
+            [ngClass]="{'sorting' : sort.field =='age' }">
+            <input [class]="facult.emp_id" type="text" class="search-field input"
+              *ngIf="currentEditableEmployee == facult.emp_id" [(ngModel)]="facult.age">
+            <span *ngIf="currentEditableEmployee != facult.emp_id">{{facult.age}}</span></td>
+          <td *ngIf="fieldsToInclude.includes('subjects')" [ngClass]="{'sorting' : sort.field =='subjects' }">
+            <ul *ngIf="currentEditableEmployee != facult.emp_id">
+              <li *ngFor="let subject of facult.subjects">{{subject}}</li>
+            </ul>
+            <div *ngIf="currentEditableEmployee == facult.emp_id">
+              <div *ngFor="let subject of facult.subjects">
+                <label><input [class]="facult.emp_id" type="checkbox" value="" class="search-field input"
+                    (change)="removeSubject($event,subject)" [checked]="true"> : {{subject}}</label>
+              </div>
+            </div>
+          </td>
+          <td *ngIf="fieldsToInclude.includes('salary')" [ngClass]="{'sorting' : sort.field =='salary' }">
+            <input type="text" class="search-field input" [class]="facult.emp_id"
+              *ngIf="currentEditableEmployee == facult.emp_id" [(ngModel)]="facult.salary">
+            <span *ngIf="currentEditableEmployee != facult.emp_id">{{facult.salary | currency}}</span>
+          </td>
+          <td *ngIf="fieldsToInclude.includes('rating')" [ngClass]="{'sorting' : sort.field =='rating' }">
+            <input type="text" class="search-field input" [class]="facult.emp_id"
+              *ngIf="currentEditableEmployee == facult.emp_id" [(ngModel)]="facult.rating">
+            <span *ngIf="currentEditableEmployee != facult.emp_id">{{facult.rating}}</span>
+          </td>
+          <td *ngIf="fieldsToInclude.includes('joineddate')" [ngClass]="{'sorting' : sort.field =='joined_date' }">
+            {{facult.joined_date | date:'longDate'}}</td>
+          <td *ngIf="enableEditing">
+            <img src="../assets/edit-button.svg" id="edit-faculty"
+              (click)="editEmployeeDetails(facult.emp_id,facult.subjects)" class="edit-icon">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pagination-container">
+      <div class="a-pagination a-lg">
+        <button (click)="decrementPage()" class="a-page a-page-link a-page-icon-decrease"></button>
+        <div class="a-page a-page-number">
+          <input type="text" class="a-current-page w-47" [(ngModel)]="currentPage" (change)="updatePageNumber()">
+          <span>of <span class="max">{{totalPages}}</span> </span>
+        </div>
+        <button (click)="incrementPage()" class="a-page a-page-link a-page-icon-increase"></button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<form [formGroup]="searchPaginationForm">
+  <div class="page-search">
+    <div class="pagination">
+      <div>
+        <label>Show
+          <select formControlName="pages" class="pagination-field input">
+            <option *ngFor="let page of dataPerPage" [ngValue]="page">
+              {{page}}
+            </option>
+          </select>
+          entries</label>
+      </div>
+    </div>
+    <div *ngIf="includeSearch" class="search">
+      <label>Search:
+        <input
+          type="search"
+          formControlName="search"
+          class="search-field input" />
+      </label>
+    </div>
+  </div>
+</form>
